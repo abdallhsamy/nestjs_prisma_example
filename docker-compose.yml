@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+  api:
+    container_name: "${APP_NAME:-dev_prisma}_api"
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '${DOCKER_COMPOSE_PORT:-08}:80'
+    volumes:
+      - .:/home/node/app
+    environment:
+      NODE_ENV: "development"
+    links:
+      - db
+    depends_on:
+      - db
+    networks:
+      - dev
+
+
+  db:
+    container_name: '${APP_NAME:-dev_prisma}_mysql'
+    restart: always
+    image: 'mysql/mysql-server:8.0'
+    ports:
+      - '${DATABASE_EXPOSE_PORT:-3306}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DATABASE_PASSWORD:-password}'
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: '${DATABASE_NAME:-dev_prisma_db}'
+      MYSQL_USER: '${DATABASE_USER:-user}'
+      MYSQL_PASSWORD: '${DATABASE_PASSWORD:-password}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    volumes:
+      - 'dev-db:/var/lib/mysql'
+    networks:
+      - dev
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-p${DATABASE_PASSWORD:-password}" ]
+      retries: 3
+      timeout: 5s
+
+  phpmyadmin:
+    platform: linux/x86_64
+    restart: always
+    container_name: '${APP_NAME:-dev_prisma}_phpmyadmin'
+    image: phpmyadmin/phpmyadmin
+    links:
+      - db:db
+    ports:
+      - "${PHPMYADMIN_PORT:-8080}:80"
+    environment:
+      MYSQL_USERNAME: "${DATABASE_USER:-user}"
+      MYSQL_ROOT_PASSWORD: "${DATABASE_PASSWORD:-password}"
+      PMA_HOST: db
+    networks:
+      - dev
+
+networks:
+  dev:
+    driver: bridge
+
+volumes:
+  dev-prisma_api:
+    driver: local
+  dev-db:
+    driver: local
+  phpmyadmin:
+    driver: local
