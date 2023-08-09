@@ -3,13 +3,16 @@ import { AppModule } from './app.module';
 import * as dotenv from "dotenv";
 import * as process from "process";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { BadRequestException, UnprocessableEntityException, ValidationError, ValidationPipe } from "@nestjs/common";
+import { DtoValidationPipe } from "./libs/validation_pipes/dto-validation.pipe";
 
 dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-
+  app.useGlobalPipes(new DtoValidationPipe());
+  // app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
     .setTitle("Median")
     .setDescription("The Median API description")
