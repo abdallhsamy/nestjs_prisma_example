@@ -1,37 +1,27 @@
-// prisma/seed.ts
-
 import { PrismaClient } from "@prisma/client";
+import { faker } from "@faker-js/faker";
 
 // initialize Prisma Client
 const prisma = new PrismaClient();
 
+const fakePost = (): any => ({
+  title: faker.lorem.sentence(),
+  body: faker.lorem.paragraph(),
+  description: faker.lorem.sentence(),
+  published: faker.helpers.arrayElement([false, true])
+});
+
+// create dummy articles
 async function main() {
-  // create two dummy articles
-  const post1 = await prisma.article.upsert({
-    where: { title: "Prisma Adds Support for MongoDB" },
-    update: {},
-    create: {
-      title: "Prisma Adds Support for MongoDB",
-      body: "Support for MongoDB has been one of the most requested features since the initial release of...",
-      description:
-        "We are excited to share that today's Prisma ORM release adds stable support for MongoDB!",
-      published: false
-    }
-  });
+  for (let i = 0; i < 1000000; i++) {
+    const post = fakePost();
 
-  const post2 = await prisma.article.upsert({
-    where: { title: "What's new in Prisma? (Q1/22)" },
-    update: {},
-    create: {
-      title: "What's new in Prisma? (Q1/22)",
-      body: "Our engineers have been working hard, issuing new releases with many improvements...",
-      description:
-        "Learn about everything in the Prisma ecosystem and community from January to March 2022.",
-      published: true
-    }
-  });
-
-  console.log({ post1, post2 });
+    await prisma.article.upsert({
+      where: { title: post.title },
+      update: {},
+      create: post
+    });
+  }
 }
 
 // execute the main function
