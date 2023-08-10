@@ -1,33 +1,20 @@
 ## nestjs prisma example
 
-## Installation
-
-```bash
-$ npm install
-```
 
 ## Running the app
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+$ docker-compose up -d
 ```
 
-## Test
+## Running Database Migrations
 
 ```bash
-# unit tests
-$ npm run test
+$ docker-compose exec api npx prisma migrate dev --name "init"
+```
 
-# e2e tests
-$ npm run test:e2e
+## Adding Fake Data
 
-# test coverage
-$ npm run test:cov
+```bash
+$ docker-compose exec api npx prisma db seed
 ```
