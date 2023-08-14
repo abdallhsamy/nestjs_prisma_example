@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from "@nestjs/common";
 import { ArticlesService } from "./articles.service";
 import { CreateArticleDto } from "./dto/create-article.dto";
 import { UpdateArticleDto } from "./dto/update-article.dto";
@@ -18,8 +18,11 @@ export class ArticlesController {
 
   @Get()
   @ApiOkResponse({ type: ArticleEntity, isArray: true })
-  findAll() {
-    return this.articlesService.findAll();
+  findAll(
+    @Query("page") page: number = 1,
+    @Query("perPage") perPage: number = 10
+  ) {
+    return this.articlesService.findAll(page, perPage);
   }
 
   @Get("drafts")

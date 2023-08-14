@@ -14,7 +14,9 @@ export class ArticlesService {
     });
   }
 
-  findAll() {
+  findAll(page = 1, perPage = 10) {
+    const skip = (page - 1) * perPage;
+
     return this.prisma.article.findMany({
       where: {
         published: true
@@ -22,7 +24,9 @@ export class ArticlesService {
       select: {
         id: true,
         title: true
-      }
+      },
+      skip,
+      take: perPage
     });
   }
 
