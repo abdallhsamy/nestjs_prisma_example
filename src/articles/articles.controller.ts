@@ -1,14 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from "@nestjs/common";
-import { ArticlesService } from "./articles.service";
-import { CreateArticleDto } from "./dto/create-article.dto";
-import { UpdateArticleDto } from "./dto/update-article.dto";
-import { ApiCreatedResponse, ApiOkResponse } from "@nestjs/swagger";
-import { ArticleEntity } from "./entities/article.entity";
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { ArticlesService } from './articles.service';
+import { CreateArticleDto } from './dto/create-article.dto';
+import { UpdateArticleDto } from './dto/update-article.dto';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ArticleEntity } from './entities/article.entity';
 
-@Controller("articles")
+@Controller('articles')
 export class ArticlesController {
-  constructor(private readonly articlesService: ArticlesService) {
-  }
+  constructor(private readonly articlesService: ArticlesService) {}
 
   @Post()
   @ApiCreatedResponse({ type: ArticleEntity })
@@ -18,34 +17,31 @@ export class ArticlesController {
 
   @Get()
   @ApiOkResponse({ type: ArticleEntity, isArray: true })
-  async findAll(
-    @Query("page") page: number = 1,
-    @Query("perPage") perPage: number = 10
-  ) {
-    return this.articlesService.findAll(page, perPage, "articles");
+  async findAll(@Query('page') page: number = 1, @Query('perPage') perPage: number = 10) {
+    return this.articlesService.findAll(page, perPage, 'articles');
   }
 
-  @Get("drafts")
+  @Get('drafts')
   @ApiOkResponse({ type: ArticleEntity, isArray: true })
   findDrafts() {
     return this.articlesService.findDrafts();
   }
 
-  @Get(":id")
+  @Get(':id')
   @ApiOkResponse({ type: ArticleEntity })
-  findOne(@Param("id") id: string) {
+  findOne(@Param('id') id: string) {
     return this.articlesService.findOne(+id);
   }
 
-  @Patch(":id")
+  @Patch(':id')
   @ApiOkResponse({ type: ArticleEntity })
-  update(@Param("id") id: string, @Body() updateArticleDto: UpdateArticleDto) {
+  update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
     return this.articlesService.update(+id, updateArticleDto);
   }
 
-  @Delete(":id")
+  @Delete(':id')
   @ApiOkResponse({ type: ArticleEntity })
-  remove(@Param("id") id: string) {
+  remove(@Param('id') id: string) {
     return this.articlesService.remove(+id);
   }
 }
