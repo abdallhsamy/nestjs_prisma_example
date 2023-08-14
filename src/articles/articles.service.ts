@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { CreateArticleDto } from "./dto/create-article.dto";
 import { UpdateArticleDto } from "./dto/update-article.dto";
 import { PrismaService } from "../prisma/prisma.service";
+import { Pagination } from "../libs/utils/pagination.util";
 
 @Injectable()
 export class ArticlesService {
@@ -14,22 +15,36 @@ export class ArticlesService {
     });
   }
 
-  findAll(page = 1, perPage = 10) {
-    const skip = (page - 1) * perPage;
+  async findAll(page = 1, perPage = 10, uri = "articles") {
+    const where = {
+      published: true
+    };
 
-    return this.prisma.article.findMany({
-      where: {
-        published: true
-      },
-      select: {
-        id: true,
-        title: true
-      },
-      skip,
+    const select = {
+      id: true,
+      title: true
+    };
+
+    const args = {
+      where,
+      select,
+      skip: (page - 1) * perPage,
       take: perPage
-    });
-  }
+    };
 
+    const [data, total] = await Promise.all([
+      this.prisma.article.findMany(args),
+      this.prisma.article.count({ where })
+    ]);
+
+    const lastPage = Math.ceil(total / perPage);
+
+    const links = Pagination.generateLinks(uri, page, lastPage);
+
+    const meta = Pagination.generateMeta(page, perPage, total);
+
+    return { data, meta, links };
+  }
 
   findDrafts() {
     return this.prisma.article.findMany({
