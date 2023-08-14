@@ -1,5 +1,5 @@
-import { Article } from "@prisma/client";
-import { ApiProperty } from "@nestjs/swagger";
+import { Article } from '@prisma/client';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ArticleEntity implements Article {
   @ApiProperty()
