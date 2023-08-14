@@ -74,10 +74,10 @@ $ docker-compose exec api npx prisma db seed
     "total": 465036
   },
   "links": {
-    "first": "http://loclalhost/articles?page=1",
-    "last": "http://loclalhost/articles?page=46504",
+    "first": "http://localhost/articles?page=1",
+    "last": "http://localhost/articles?page=46504",
     "prev": null,
-    "next": "http://loclalhost/articles?page=11"
+    "next": "http://localhost/articles?page=11"
   }
 }
 ```
